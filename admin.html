@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Dosen</title>
+  <title>Login Dosen & Upload Revisi</title>
   <style>
     :root {
       --primary: #5b21b6;
@@ -31,7 +31,7 @@
       position: relative;
     }
 
-    /* Background blob animation */
+    /* Animasi latar blob */
     .blob {
       position: absolute;
       width: 400px;
@@ -59,7 +59,7 @@
       100% { transform: translateY(-50px) scale(1.05); }
     }
 
-    /* Login Card */
+    /* Kartu login & upload */
     .container {
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(15px);
@@ -131,7 +131,7 @@
       min-height: 1.5rem;
     }
 
-    /* Tombol kembali ke Inquiry */
+    /* Tombol kembali */
     .back-link {
       margin-top: 1.5rem;
       display: inline-block;
@@ -146,7 +146,7 @@
       text-decoration: underline;
     }
 
-    /* Upload Form */
+    /* Upload */
     .hidden {
       display: none;
     }
@@ -159,6 +159,29 @@
       border: none;
       background: rgba(255, 255, 255, 0.15);
       color: white;
+      font-size: 1rem;
+      transition: all 0.3s;
+      appearance: none;
+      outline: none;
+    }
+
+    select:focus {
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 10px rgba(91, 33, 182, 0.4);
+      transform: scale(1.02);
+    }
+
+    option {
+      background-color: #1e293b;
+      color: #f1f5f9;
+    }
+
+    select::-webkit-scrollbar {
+      width: 8px;
+    }
+    select::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 10px;
     }
 
     #uploadBtn {
@@ -170,6 +193,7 @@
   <div class="blob blob1"></div>
   <div class="blob blob2"></div>
 
+  <!-- Login -->
   <div class="container" id="loginContainer">
     <h2>Login Level Dosen</h2>
     <input type="text" id="username" placeholder="Username" />
@@ -179,6 +203,7 @@
     <a href="inquiry.html" class="back-link">⬅ Kembali ke Halaman Mahasiswa</a>
   </div>
 
+  <!-- Upload -->
   <div class="container hidden" id="uploadContainer">
     <h2>Upload Hasil Revisi</h2>
     <select id="jenis">
@@ -194,7 +219,7 @@
   </div>
 
   <script>
-    // LOGIN SIMULASI
+    // ======== LOGIN SESSION ==========
     const validUser = "7418";
     const validPass = "Ho*66691546";
     const loginContainer = document.getElementById("loginContainer");
@@ -214,6 +239,7 @@
       }
     });
 
+    // Jika sudah login sebelumnya
     if (sessionStorage.getItem("isLoggedIn") === "true") {
       loginContainer.classList.add("hidden");
       uploadContainer.classList.remove("hidden");
