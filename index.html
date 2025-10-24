@@ -274,7 +274,7 @@
         return;
       }
 
-      const filePath = `/files/${jenis}/${nim}.pdf`;
+      const filePath = `files/${jenis.toLowerCase()}/${nim}.pdf`;;
 
       fetch(filePath, { method: "HEAD" })
         .then((res) => {
