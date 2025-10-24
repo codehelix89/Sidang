@@ -30,6 +30,7 @@
       min-height: 100vh;
       overflow: hidden;
       transition: all 0.8s ease;
+      flex-direction: column;
     }
 
     body.dark {
@@ -61,13 +62,7 @@
       background: linear-gradient(90deg, var(--secondary), var(--primary));
       -webkit-background-clip: text;
       color: transparent;
-      margin-bottom: 0.4rem;
-    }
-
-    p {
-      font-size: 0.9rem;
-      opacity: 0.85;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     label {
@@ -78,12 +73,7 @@
       transition: color 0.3s ease;
     }
 
-    body.dark label {
-      color: #e2e8f0;
-    }
-
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 0.75rem 1rem;
       border: 1px solid #ccc;
@@ -92,26 +82,16 @@
       font-family: inherit;
       height: 50px;
       background-color: rgba(255, 255, 255, 0.9);
-      appearance: none;
       color: #1f2937;
       transition: all 0.3s ease-in-out;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: var(--secondary);
       box-shadow: 0 0 15px rgba(37, 99, 235, 0.35);
       transform: scale(1.01);
       outline: none;
-    }
-
-    body.dark input,
-    body.dark select {
-      background-color: rgba(30, 41, 59, 0.8);
-      border: 1px solid #334155;
-      color: #f9fafb;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
     button {
@@ -144,6 +124,44 @@
       display: none;
     }
 
+    .pdf-viewer {
+      margin-top: 1.5rem;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      height: 500px;
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* === TOMBOL ADMIN === */
+    .admin-link {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .admin-link a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #2563eb, #5b21b6);
+      color: white;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(91, 33, 182, 0.3);
+    }
+
+    .admin-link a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(91, 33, 182, 0.5);
+    }
+
     .bg-blob {
       position: absolute;
       border-radius: 50%;
@@ -169,8 +187,12 @@
     }
 
     @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-30px) rotate(45deg); }
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-30px) rotate(45deg);
+      }
     }
   </style>
 </head>
@@ -193,14 +215,24 @@
 
     <button id="tampilkan">🔍 Tampilkan Dokumen</button>
     <div id="error" class="error"></div>
+
+    <div class="pdf-viewer" id="pdf-viewer">
+      <iframe id="pdf-frame"></iframe>
+    </div>
+
+    <!-- Tombol Menu ke Halaman Admin -->
+    <div class="admin-link">
+      <a href="admin.html" target="_blank">🔐 Login Dosen/Admin</a>
+    </div>
   </div>
 
   <script>
     const button = document.getElementById("tampilkan");
     const errorBox = document.getElementById("error");
+    const pdfViewer = document.getElementById("pdf-viewer");
+    const pdfFrame = document.getElementById("pdf-frame");
 
-    // Dark mode otomatis
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
       document.body.classList.add("dark");
     }
 
@@ -218,9 +250,9 @@
       fetch(filePath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
+            pdfFrame.src = filePath;
+            pdfViewer.style.display = "block";
             errorBox.style.display = "none";
-            // 🟢 Buka di halaman baru
-            window.open(filePath, "_blank");
           } else {
             showError(`❌ File ${jenis} dengan NIM ${nim} tidak ditemukan.`);
           }
@@ -231,6 +263,7 @@
     function showError(msg) {
       errorBox.textContent = msg;
       errorBox.style.display = "block";
+      pdfViewer.style.display = "none";
     }
   </script>
 </body>
