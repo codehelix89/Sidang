@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Upload Revisi</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      width: 400px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.7rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    input, select {
+      background: rgba(255, 255, 255, 0.8);
+      color: #1e293b;
+    }
+
+    button {
+      background: linear-gradient(90deg, #2563eb, #5b21b6);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #93c5fd, #c084fc);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="loginContainer">
+    <h2>Login Dosen</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Masuk</button>
+    <div id="loginMsg" class="message"></div>
+  </div>
+
+  <div class="container hidden" id="uploadContainer">
+    <h2>Upload Hasil Revisi</h2>
+    <select id="jenis">
+      <option value="">-- Pilih Jenis Sidang --</option>
+      <option value="proposal">Proposal</option>
+      <option value="skripsi">Skripsi</option>
+    </select>
+    <input type="text" id="nim" placeholder="Masukkan NIM Mahasiswa" />
+    <input type="file" id="fileInput" accept="application/pdf" />
+    <button id="uploadBtn">📤 Upload</button>
+    <div id="uploadMsg" class="message"></div>
+  </div>
+
+  <script>
+    // =============== KONFIGURASI GITHUB ==================
+    const GITHUB_USERNAME = "USERNAME_ANDA"; // ganti dengan username GitHub Anda
+    const REPO_NAME = "NAMA_REPOSITORY";     // ganti dengan nama repo GitHub Anda
+    const BRANCH = "main";                   // atau 'master' sesuai repo Anda
+    const TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // masukkan Personal Access Token GitHub Anda
+
+    // =============== LOGIN SESSION ==================
+    const loginContainer = document.getElementById("loginContainer");
+    const uploadContainer = document.getElementById("uploadContainer");
+    const loginMsg = document.getElementById("loginMsg");
+
+    const validUser = "dosen";
+    const validPass = "admin123"; // bisa diganti
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+
+      if (user === validUser && pass === validPass) {
+        sessionStorage.setItem("isLoggedIn", "true");
+        loginContainer.classList.add("hidden");
+        uploadContainer.classList.remove("hidden");
+      } else {
+        loginMsg.textContent = "❌ Username atau password salah!";
+      }
+    });
+
+    // Jika sudah login sebelumnya
+    if (sessionStorage.getItem("isLoggedIn") === "true") {
+      loginContainer.classList.add("hidden");
+      uploadContainer.classList.remove("hidden");
+    }
+
+    // =============== UPLOAD FILE KE GITHUB ==================
+    document.getElementById("uploadBtn").addEventListener("click", async () => {
+      const jenis = document.getElementById("jenis").value;
+      const nim = document.getElementById("nim").value.trim();
+      const fileInput = document.getElementById("fileInput").files[0];
+      const uploadMsg = document.getElementById("uploadMsg");
+
+      if (!jenis || !nim || !fileInput) {
+        uploadMsg.textContent = "⚠️ Lengkapi semua kolom sebelum upload.";
+        return;
+      }
+
+      // Baca file dan konversi ke Base64
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const content = reader.result.split(",")[1];
+        const path = `files/${jenis}/${nim}.pdf`;
+        const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${path}`;
+
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Authorization": `token ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `Upload hasil revisi ${jenis} ${nim}`,
+            content: content,
+            branch: BRANCH,
+          }),
+        });
+
+        if (response.ok) {
+          uploadMsg.textContent = `✅ File berhasil diupload ke folder ${jenis}/`;
+        } else {
+          uploadMsg.textContent = `❌ Gagal upload: ${response.statusText}`;
+        }
+      };
+
+      reader.readAsDataURL(fileInput);
+    });
+  </script>
+</body>
+</html>
