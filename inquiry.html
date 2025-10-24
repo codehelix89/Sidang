@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inquiry Revisi Mahasiswa</title>
+  <style>
+    :root {
+      --primary: #5b21b6;
+      --secondary: #2563eb;
+      --bg-light: linear-gradient(135deg, #e0f2fe, #ede9fe);
+      --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+      --text-light: #1f2937;
+      --text-dark: #f9fafb;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: all 0.8s ease;
+      overflow: hidden;
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      transition: background 0.5s;
+    }
+
+    body.dark .container {
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 0.5rem 0;
+      text-align: left;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    }
+
+    .error {
+      background: rgba(255, 0, 0, 0.1);
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      padding: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .pdf-viewer {
+      margin-top: 1.5rem;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      height: 500px;
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Background Animation */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.5;
+      animation: float 15s infinite ease-in-out alternate;
+    }
+
+    .blob1 { background: #60a5fa; width: 300px; height: 300px; top: -100px; left: -100px; }
+    .blob2 { background: #a78bfa; width: 400px; height: 400px; bottom: -150px; right: -150px; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-30px) rotate(45deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+
+  <div class="container">
+    <h1>Inquiry Revisi Mahasiswa</h1>
+    <p>Sistem Pengecekan Dokumen Proposal & Skripsi</p>
+
+    <label for="nim">Masukkan NIM Mahasiswa</label>
+    <input type="text" id="nim" placeholder="Contoh: 12345678">
+
+    <label for="jenis">Pilih Jenis Dokumen</label>
+    <select id="jenis">
+      <option value="">-- Pilih jenis dokumen --</option>
+      <option value="proposal">Proposal</option>
+      <option value="skripsi">Skripsi</option>
+    </select>
+
+    <button id="tampilkan">🔍 Tampilkan Dokumen</button>
+    <div id="error" class="error" style="display:none;"></div>
+
+    <div class="pdf-viewer" id="pdf-viewer">
+      <iframe id="pdf-frame"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const button = document.getElementById('tampilkan');
+    const errorBox = document.getElementById('error');
+    const pdfViewer = document.getElementById('pdf-viewer');
+    const pdfFrame = document.getElementById('pdf-frame');
+
+    // Dark mode otomatis
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark');
+    }
+
+    button.addEventListener('click', () => {
+      const nim = document.getElementById('nim').value.trim();
+      const jenis = document.getElementById('jenis').value;
+
+      if (!nim || !jenis) {
+        showError('⚠️ Silakan masukkan NIM dan pilih jenis dokumen.');
+        return;
+      }
+
+      const filePath = `/files/${jenis}/${nim}.pdf`;
+
+      fetch(filePath, { method: 'HEAD' })
+        .then(res => {
+          if (res.ok) {
+            pdfFrame.src = filePath;
+            pdfViewer.style.display = 'block';
+            errorBox.style.display = 'none';
+          } else {
+            showError(`❌ File ${jenis} dengan NIM ${nim} tidak ditemukan.`);
+          }
+        })
+        .catch(() => showError('🚫 Terjadi kesalahan dalam memuat file.'));
+    });
+
+    function showError(msg) {
+      errorBox.innerHTML = msg;
+      errorBox.style.display = 'block';
+      pdfViewer.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
