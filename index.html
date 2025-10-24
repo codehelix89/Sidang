@@ -14,7 +14,6 @@
       --text-dark: #f9fafb;
     }
 
-    /* === GLOBAL STYLING === */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -38,7 +37,6 @@
       color: var(--text-dark);
     }
 
-    /* === CONTAINER === */
     .container {
       background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(15px);
@@ -57,8 +55,7 @@
       background: rgba(30, 41, 59, 0.7);
     }
 
-    /* === HEADER === */
-    h1 {
+    h2 {
       font-size: 1.9rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--secondary), var(--primary));
@@ -73,7 +70,6 @@
       margin-bottom: 1.5rem;
     }
 
-    /* === FORM FIELD === */
     label {
       display: block;
       font-weight: 600;
@@ -97,8 +93,6 @@
       height: 50px;
       background-color: rgba(255, 255, 255, 0.9);
       appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
       color: #1f2937;
       transition: all 0.3s ease-in-out;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
@@ -112,11 +106,6 @@
       outline: none;
     }
 
-    input:hover,
-    select:hover {
-      box-shadow: 0 4px 10px rgba(91, 33, 182, 0.2);
-    }
-
     body.dark input,
     body.dark select {
       background-color: rgba(30, 41, 59, 0.8);
@@ -125,25 +114,6 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
-    body.dark input:focus,
-    body.dark select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 18px rgba(147, 51, 234, 0.4);
-    }
-
-    /* Ikon dropdown */
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      background-size: 1rem;
-    }
-
-    body.dark select {
-      background-image: url("data:image/svg+xml,%3Csvg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    }
-
-    /* === BUTTON === */
     button {
       width: 100%;
       padding: 0.8rem;
@@ -164,7 +134,6 @@
       box-shadow: 0 6px 20px rgba(91, 33, 182, 0.5);
     }
 
-    /* === ERROR MESSAGE === */
     .error {
       background: rgba(255, 0, 0, 0.1);
       color: #dc2626;
@@ -175,23 +144,6 @@
       display: none;
     }
 
-    /* === PDF VIEWER === */
-    .pdf-viewer {
-      margin-top: 1.5rem;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      height: 500px;
-      display: none;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* === BACKGROUND BLOBS === */
     .bg-blob {
       position: absolute;
       border-radius: 50%;
@@ -217,12 +169,8 @@
     }
 
     @keyframes float {
-      0% {
-        transform: translateY(0) rotate(0deg);
-      }
-      100% {
-        transform: translateY(-30px) rotate(45deg);
-      }
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-30px) rotate(45deg); }
     }
   </style>
 </head>
@@ -245,23 +193,14 @@
 
     <button id="tampilkan">🔍 Tampilkan Dokumen</button>
     <div id="error" class="error"></div>
-
-    <div class="pdf-viewer" id="pdf-viewer">
-      <iframe id="pdf-frame"></iframe>
-    </div>
   </div>
 
   <script>
     const button = document.getElementById("tampilkan");
     const errorBox = document.getElementById("error");
-    const pdfViewer = document.getElementById("pdf-viewer");
-    const pdfFrame = document.getElementById("pdf-frame");
 
     // Dark mode otomatis
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       document.body.classList.add("dark");
     }
 
@@ -274,27 +213,24 @@
         return;
       }
 
-      const filePath = `files/${jenis.toLowerCase()}/${nim}.pdf`;;
+      const filePath = `files/${jenis.toLowerCase()}/${nim}.pdf`;
 
       fetch(filePath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
-            pdfFrame.src = filePath;
-            pdfViewer.style.display = "block";
             errorBox.style.display = "none";
+            // 🟢 Buka di halaman baru
+            window.open(filePath, "_blank");
           } else {
             showError(`❌ File ${jenis} dengan NIM ${nim} tidak ditemukan.`);
           }
         })
-        .catch(() =>
-          showError("🚫 Terjadi kesalahan dalam memuat file.")
-        );
+        .catch(() => showError("🚫 Terjadi kesalahan dalam memuat file."));
     });
 
     function showError(msg) {
       errorBox.textContent = msg;
       errorBox.style.display = "block";
-      pdfViewer.style.display = "none";
     }
   </script>
 </body>
