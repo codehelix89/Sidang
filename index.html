@@ -3,74 +3,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hasil Review Sidang Proposal/Skripsi</title>
+  <title>Hasil Revisi Sidang Proposal/Skripsi</title>
   <style>
     :root {
       --primary: #5b21b6;
       --secondary: #2563eb;
-      --bg-light: linear-gradient(135deg, #e0f2fe, #ede9fe);
-      --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+      --bg1: #0f172a;
+      --bg2: #1e293b;
       --text-light: #1f2937;
       --text-dark: #f9fafb;
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: "Poppins", sans-serif;
-      background: var(--bg-light);
-      color: var(--text-light);
+      color: var(--text-dark);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       overflow: hidden;
-      transition: all 0.8s ease;
-      flex-direction: column;
-    }
-
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       position: relative;
-      z-index: 1;
-      transition: background 0.5s;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background-size: 400% 400%;
+      animation: gradientMove 10s ease infinite;
     }
 
-    body.dark .container {
-      background: rgba(30, 41, 59, 0.7);
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- Efek Partikel --- */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      animation: floatUp 10s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0.2;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Blob animasi lembut */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      animation: float 15s infinite ease-in-out alternate;
+      z-index: 0;
+    }
+
+    .blob1 {
+      background: #60a5fa;
+      width: 300px;
+      height: 300px;
+      top: -80px;
+      left: -80px;
+    }
+
+    .blob2 {
+      background: #a78bfa;
+      width: 350px;
+      height: 350px;
+      bottom: -100px;
+      right: -100px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-40px) rotate(45deg); }
+    }
+
+    /* Kontainer utama */
+    .container {
+      position: relative;
+      z-index: 10;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 90%;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
-      font-size: 1.9rem;
+      font-size: 1.8rem;
       font-weight: 700;
       background: linear-gradient(90deg, var(--secondary), var(--primary));
       -webkit-background-clip: text;
       color: transparent;
-      margin-bottom: 1rem;
+      margin-bottom: 1.8rem;
     }
 
     label {
       display: block;
       font-weight: 600;
-      margin: 0.75rem 0 0.3rem;
+      margin: 0.7rem 0 0.3rem;
       text-align: left;
-      transition: color 0.3s ease;
     }
 
     input, select {
@@ -79,24 +144,22 @@
       border: 1px solid #ccc;
       border-radius: 12px;
       font-size: 1rem;
-      font-family: inherit;
-      height: 50px;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.95);
       color: #1f2937;
       transition: all 0.3s ease-in-out;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     input:focus, select:focus {
       border-color: var(--secondary);
-      box-shadow: 0 0 15px rgba(37, 99, 235, 0.35);
-      transform: scale(1.01);
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.35);
       outline: none;
+      transform: scale(1.01);
     }
 
     button {
       width: 100%;
-      padding: 0.8rem;
+      padding: 0.9rem;
       border: none;
       border-radius: 12px;
       background: linear-gradient(90deg, var(--secondary), var(--primary));
@@ -104,7 +167,7 @@
       font-weight: bold;
       font-size: 1rem;
       cursor: pointer;
-      margin-top: 0.5rem;
+      margin-top: 1.2rem;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(91, 33, 182, 0.4);
     }
@@ -116,7 +179,7 @@
 
     .error {
       background: rgba(255, 0, 0, 0.1);
-      color: #dc2626;
+      color: #f87171;
       border: 1px solid #fca5a5;
       border-radius: 8px;
       padding: 0.8rem;
@@ -124,7 +187,6 @@
       display: none;
     }
 
-    /* === TOMBOL ADMIN === */
     .admin-link {
       margin-top: 1.5rem;
       text-align: center;
@@ -133,7 +195,7 @@
     .admin-link a {
       display: inline-block;
       text-decoration: none;
-      padding: 0.7rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       border-radius: 10px;
       background: linear-gradient(90deg, #2563eb, #5b21b6);
       color: white;
@@ -147,49 +209,30 @@
       box-shadow: 0 6px 20px rgba(91, 33, 182, 0.5);
     }
 
-    .bg-blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.4;
-      animation: float 15s infinite ease-in-out alternate;
-    }
-
-    .blob1 {
-      background: #60a5fa;
-      width: 300px;
-      height: 300px;
-      top: -100px;
-      left: -100px;
-    }
-
-    .blob2 {
-      background: #a78bfa;
-      width: 400px;
-      height: 400px;
-      bottom: -150px;
-      right: -150px;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-30px) rotate(45deg); }
+    @media (max-width: 480px) {
+      h2 { font-size: 1.5rem; }
+      .container { padding: 1.8rem 1.2rem; }
     }
   </style>
 </head>
 <body>
+  <!-- Partikel -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Blob -->
   <div class="bg-blob blob1"></div>
   <div class="bg-blob blob2"></div>
 
+  <!-- Konten -->
   <div class="container">
     <h2>Hasil Revisi Sidang Proposal/Skripsi</h2>
 
     <label for="nim">Masukkan NIM Mahasiswa</label>
-    <input type="text" id="nim" placeholder="Contoh: 12345678" />
+    <input type="text" id="nim" placeholder="Contoh: 201012136" />
 
     <label for="jenis">Pilih Jenis Sidang</label>
     <select id="jenis">
-      <option value="">-- Pilih jenis sidang --</option>
+      <option value="">-- Pilih Jenis Sidang --</option>
       <option value="Proposal">Proposal</option>
       <option value="Skripsi">Skripsi</option>
     </select>
@@ -197,20 +240,29 @@
     <button id="tampilkan">🔍 Tampilkan Dokumen</button>
     <div id="error" class="error"></div>
 
-    <!-- Tombol Menu ke Halaman Admin -->
     <div class="admin-link">
       <a href="admin.html" target="_blank">🔐 Login Dosen/Admin</a>
     </div>
   </div>
 
   <script>
+    // === Partikel random background ===
+    const particlesContainer = document.getElementById("particles");
+    const particleCount = 30;
+
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement("div");
+      particle.classList.add("particle");
+      particle.style.left = Math.random() * 100 + "vw";
+      particle.style.animationDuration = 8 + Math.random() * 10 + "s";
+      particle.style.animationDelay = Math.random() * 5 + "s";
+      particle.style.width = particle.style.height = Math.random() * 6 + 2 + "px";
+      particlesContainer.appendChild(particle);
+    }
+
+    // === Logika tombol tampilkan dokumen ===
     const button = document.getElementById("tampilkan");
     const errorBox = document.getElementById("error");
-
-    // Otomatis aktifkan dark mode jika browser dalam mode gelap
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.body.classList.add("dark");
-    }
 
     button.addEventListener("click", () => {
       const nim = document.getElementById("nim").value.trim();
@@ -223,11 +275,9 @@
 
       const filePath = `files/${jenis.toLowerCase()}/${nim}.pdf`;
 
-      // Cek apakah file ada
       fetch(filePath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
-            // Jika ditemukan, buka tab baru
             window.open(filePath, "_blank");
             errorBox.style.display = "none";
           } else {
