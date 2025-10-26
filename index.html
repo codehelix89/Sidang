@@ -8,9 +8,8 @@
     :root {
       --primary: #5b21b6;
       --secondary: #2563eb;
-      --bg1: #0f172a;
+      --bg1: #0a0f1f;
       --bg2: #1e293b;
-      --text-light: #1f2937;
       --text-dark: #f9fafb;
     }
 
@@ -29,19 +28,12 @@
       height: 100vh;
       overflow: hidden;
       position: relative;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      background-size: 400% 400%;
-      animation: gradientMove 10s ease infinite;
+      background: radial-gradient(circle at 20% 20%, #1e293b, #0a0f1f 80%);
+      transition: background 1s ease;
     }
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* --- Efek Partikel --- */
-    .particles {
+    /* === Efek bintang berkelap-kelip === */
+    .stars {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -51,27 +43,22 @@
       z-index: 0;
     }
 
-    .particle {
+    .star {
       position: absolute;
-      width: 6px;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.4);
+      width: 2px;
+      height: 2px;
+      background: white;
       border-radius: 50%;
-      animation: floatUp 10s linear infinite;
+      opacity: 0.6;
+      animation: twinkle 2s infinite ease-in-out alternate;
     }
 
-    @keyframes floatUp {
-      0% {
-        transform: translateY(100vh) scale(0.5);
-        opacity: 0.2;
-      }
-      100% {
-        transform: translateY(-10vh) scale(1);
-        opacity: 0.8;
-      }
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
     }
 
-    /* Blob animasi lembut */
+    /* === Blob efek neon lembut === */
     .bg-blob {
       position: absolute;
       border-radius: 50%;
@@ -102,7 +89,7 @@
       100% { transform: translateY(-40px) rotate(45deg); }
     }
 
-    /* Kontainer utama */
+    /* === Kontainer utama === */
     .container {
       position: relative;
       z-index: 10;
@@ -114,7 +101,7 @@
       max-width: 450px;
       text-align: center;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      animation: fadeIn 1s ease;
+      animation: fadeIn 1.2s ease;
     }
 
     @keyframes fadeIn {
@@ -216,14 +203,14 @@
   </style>
 </head>
 <body>
-  <!-- Partikel -->
-  <div class="particles" id="particles"></div>
+  <!-- Latar Bintang -->
+  <div class="stars" id="stars"></div>
 
-  <!-- Blob -->
+  <!-- Blob animasi -->
   <div class="bg-blob blob1"></div>
   <div class="bg-blob blob2"></div>
 
-  <!-- Konten -->
+  <!-- Kontainer utama -->
   <div class="container">
     <h2>Hasil Revisi Sidang Proposal/Skripsi</h2>
 
@@ -246,21 +233,20 @@
   </div>
 
   <script>
-    // === Partikel random background ===
-    const particlesContainer = document.getElementById("particles");
-    const particleCount = 30;
-
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement("div");
-      particle.classList.add("particle");
-      particle.style.left = Math.random() * 100 + "vw";
-      particle.style.animationDuration = 8 + Math.random() * 10 + "s";
-      particle.style.animationDelay = Math.random() * 5 + "s";
-      particle.style.width = particle.style.height = Math.random() * 6 + 2 + "px";
-      particlesContainer.appendChild(particle);
+    // === Efek Bintang ===
+    const starsContainer = document.getElementById("stars");
+    const starCount = 120;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.left = Math.random() * 100 + "vw";
+      star.style.top = Math.random() * 100 + "vh";
+      star.style.animationDelay = Math.random() * 3 + "s";
+      star.style.width = star.style.height = Math.random() * 2 + 1 + "px";
+      starsContainer.appendChild(star);
     }
 
-    // === Logika tombol tampilkan dokumen ===
+    // === Fungsi tampilkan PDF ===
     const button = document.getElementById("tampilkan");
     const errorBox = document.getElementById("error");
 
